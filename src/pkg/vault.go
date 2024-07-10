@@ -3,6 +3,13 @@ package pkg
 import (
 	"fmt"
 	"github.com/hashicorp/vault/api"
+	"log"
+	"sync"
+)
+
+var (
+	instance *Vault
+	once     sync.Once
 )
 
 type Vault struct {
@@ -12,11 +19,27 @@ type Vault struct {
 	PulledVar map[string]string
 }
 
+// NewVault NewVault: create a singleton object from Vault
 func NewVault(config *api.Config) *Vault {
-	return &Vault{Config: config,
-		PushVar:   map[string]interface{}{},
-		PulledVar: map[string]string{},
-	}
+	once.Do(func() {
+		instance = &Vault{
+			Config:    config,
+			PushVar:   map[string]interface{}{},
+			PulledVar: map[string]string{},
+		}
+
+		err := instance.Connect()
+		if err != nil {
+			log.Fatal("failed to connect to vault")
+		}
+		log.Println("successfully connected to vault")
+	})
+	return instance
+}
+
+// GetVault return the singleton object from Vault
+func GetVault() *Vault {
+	return instance
 }
 
 func (v *Vault) Connect() error {
@@ -28,10 +51,6 @@ func (v *Vault) Connect() error {
 	v.Client = client
 
 	return nil
-}
-
-func (v *Vault) SetToken(token string) {
-	v.Client.SetToken(token)
 }
 
 func (v *Vault) WriteVault(path string) error {
@@ -54,10 +73,16 @@ func (v *Vault) ReadVault(path string) error {
 				v.PulledVar[key] = value.(string)
 			}
 		}
+		log.Println("successfully read vault data")
 		return nil
 	}
 
 	return fmt.Errorf("no secret found in path: %s", path)
+}
+
+func (v *Vault) SetToken(token string) *Vault {
+	v.Client.SetToken(token)
+	return v
 }
 
 func (v *Vault) SetVar(key string, value string) {
