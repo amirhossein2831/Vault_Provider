@@ -3,8 +3,14 @@ module github.com/amirhossein2831/Vault_Provider
 go 1.22
 
 require (
+	github.com/davecgh/go-spew v1.1.1
+	github.com/go-chi/chi/v5 v5.1.0
+	github.com/hashicorp/vault/api v1.14.0
+	github.com/joho/godotenv v1.5.1
+)
+
+require (
 	github.com/cenkalti/backoff/v3 v3.0.0 // indirect
-	github.com/go-chi/chi/v5 v5.1.0 // indirect
 	github.com/go-jose/go-jose/v4 v4.0.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
@@ -15,8 +21,6 @@ require (
 	github.com/hashicorp/go-secure-stdlib/strutil v0.1.2 // indirect
 	github.com/hashicorp/go-sockaddr v1.0.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/hashicorp/vault/api v1.14.0 // indirect
-	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/ryanuber/go-glob v1.0.0 // indirect
